@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECATEX Aerospace | Cyber-Tech Design System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js for 3D Wireframe Globe -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --border-color: #ffffff;
+            --muted-color: #888888;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        .font-mono-tech {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fff;
+        }
+
+        /* Scanlines & Grid Effect */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+
+        .scanline {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0),
+                rgba(255, 255, 255, 0.04),
+                rgba(255,255,255,0)
+            );
+            background-size: 100% 8px;
+        }
+
+        /* Custom Cursor Particle */
+        .cursor-trail {
+            pointer-events: none;
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 9999;
+            transition: transform 0.1s ease-out, opacity 0.5s ease-out;
+        }
+
+        /* Cassette Reel Rotation */
+        @keyframes spinReel {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spinning {
+            animation: spinReel 4s linear infinite;
+        }
+
+        /* Marquee Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee {
+            display: flex;
+            width: 200%;
+            animation: marquee 20s linear infinite;
+        }
+
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        /* Glitch Effect on Hover */
+        .glitch-hover:hover {
+            text-shadow: 2px 0 #fff, -2px 0 #888;
+        }
+    </style>
+</head>
+<body class="bg-black text-white relative bg-grid scanline min-h-screen selection:bg-white selection:text-black">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/20 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 border border-white flex items-center justify-center font-mono-tech text-xs font-bold tracking-widest bg-white text-black">
+                    TX
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold tracking-widest text-lg uppercase glitch-hover">TECATEX</span>
+                    <span class="font-mono-tech text-[10px] tracking-widest text-neutral-400">AEROSPACE DIVISION</span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 font-mono-tech text-xs tracking-wider uppercase text-neutral-300">
+                <a href="#hero" class="hover:text-white hover:underline transition">01// System Overview</a>
+                <a href="#kasseta" class="hover:text-white hover:underline transition">02// Audio Plugin</a>
+                <a href="#assets" class="hover:text-white hover:underline transition">03// Asset Bank</a>
+                <a href="#specs" class="hover:text-white hover:underline transition">04// Telemetry</a>
+            </nav>
+
+            <!-- CTA Button -->
+            <div class="flex items-center gap-4">
+                <button class="font-mono-tech text-xs px-4 py-2 border border-white hover:bg-white hover:text-black transition uppercase font-bold tracking-wider">
+                    Access Portal
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Marquee Banner -->
+    <div class="border-b border-white/20 bg-black overflow-hidden py-2 font-mono-tech text-xs tracking-widest uppercase">
+        <div class="animate-marquee whitespace-nowrap flex gap-12 text-neutral-400">
+            <span>✦ TECATEX AEROSPACE // ORBITAL SYSTEMS OPERATIONAL</span>
+            <span>✦ PARENTAL ADVISORY // EXPLICIT AUDIO ENGINEERING</span>
+            <span>✦ GLOBAL COMMUNICATIONS GRID ACTIVE</span>
+            <span>✦ COMPACT DISC DIGITAL AUDIO SPECIFICATION</span>
+            <span>✦ TECATEX AEROSPACE // ORBITAL SYSTEMS OPERATIONAL</span>
+            <span>✦ PARENTAL ADVISORY // EXPLICIT AUDIO ENGINEERING</span>
+        </div>
+    </div>
+
+    <!-- Main Hero Section with Interactive 3D Globe -->
+    <section id="hero" class="relative max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center border-b border-white/20">
+        <!-- Text Left -->
+        <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 border border-white/30 px-3 py-1 font-mono-tech text-xs text-neutral-300">
+                <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                SYSTEM REVISION 2026.4 // MONOCHROME HIGH-CONTRAST
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight uppercase leading-none">
+                Developing <br>
+                <span class="text-neutral-400 underline decoration-white decoration-2">Better Software</span> <br>
+                & Aerospace Tech
+            </h1>
+
+            <p class="text-neutral-400 max-w-xl font-mono-tech text-sm leading-relaxed">
+                We engineer precise, ultra-optimized user interfaces and analog audio synthesis engines designed for extreme environment telemetry and studio fidelity.
+            </p>
+
+            <div class="flex flex-wrap gap-4 pt-4">
+                <button class="px-6 py-3 bg-white text-black font-mono-tech text-sm font-bold uppercase tracking-wider hover:bg-neutral-200 transition flex items-center gap-2">
+                    Browse Applications <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </button>
+                <button class="px-6 py-3 border border-white text-white font-mono-tech text-sm font-bold uppercase tracking-wider hover:bg-white/10 transition">
+                    System Architecture
+                </button>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-4 gap-4 pt-8 border-t border-white/20 font-mono-tech">
+                <div>
+                    <div class="text-2xl font-bold">10+</div>
+                    <div class="text-[10px] text-neutral-400 uppercase">Apps Deployed</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold">3000+</div>
+                    <div class="text-[10px] text-neutral-400 uppercase">Active Users</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold">17</div>
+                    <div class="text-[10px] text-neutral-400 uppercase">Years Exp.</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold">99%</div>
+                    <div class="text-[10px] text-neutral-400 uppercase">Efficiency</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Interactive Globe Canvas Right -->
+        <div class="lg:col-span-5 relative flex flex-col items-center justify-center">
+            <div class="relative w-full aspect-square border border-white/20 bg-neutral-950/50 flex items-center justify-center overflow-hidden">
+                <div id="canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+                
+                <!-- Overlay HUD items -->
+                <div class="absolute top-3 left-3 font-mono-tech text-[10px] text-neutral-400 tracking-wider">
+                    [ORBITAL_WIREFRAME_3D]<br>
+                    LAT: 24.8091° N // LON: 107.3940° W
+                </div>
+                <div class="absolute bottom-3 right-3 font-mono-tech text-[10px] text-neutral-400 text-right">
+                    INTERACTIVE MATRIX<br>
+                    DRAG TO ROTATE
+                </div>
+            </div>
+            
+            <!-- Controls for Globe -->
+            <div class="w-full flex justify-between gap-2 mt-2 font-mono-tech text-xs">
+                <button id="wireframe-toggle" class="flex-1 py-1 border border-white/30 hover:border-white transition text-neutral-300 hover:text-white">
+                    Toggle Wireframe Dense
+                </button>
+                <button id="speed-toggle" class="flex-1 py-1 border border-white/30 hover:border-white transition text-neutral-300 hover:text-white">
+                    Speed: 1.0x
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kasseta Audio Plugin Section -->
+    <section id="kasseta" class="max-w-7xl mx-auto px-6 py-16 border-b border-white/20">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+            <div>
+                <span class="font-mono-tech text-xs text-neutral-400 uppercase tracking-widest">// RECENTLY RELEASED</span>
+                <h2 class="text-3xl font-extrabold uppercase mt-1">KASSETA C90 SX-II</h2>
+            </div>
+            <p class="font-mono-tech text-xs text-neutral-400 max-w-md mt-4 md:mt-0">
+                A sound simulator of an analog cassette player with characteristic pitch wobble, hiss saturation, and magnetic tape mechanics.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-neutral-950 border border-white/20 p-6 md:p-8">
+            <!-- Cassette Tape Graphic Interactive -->
+            <div class="lg:col-span-6 border border-white/20 p-6 bg-black flex flex-col items-center justify-center relative">
+                <!-- Cassette Body -->
+                <div class="w-full max-w-md aspect-[1.6/1] border-2 border-white p-4 flex flex-col justify-between relative bg-neutral-900">
+                    <!-- Cassette Header -->
+                    <div class="flex justify-between items-center border-b border-white pb-2 font-mono-tech text-xs">
+                        <span class="font-bold">TECATEX C90</span>
+                        <span>HIGH POSITION / TYPE II</span>
+                    </div>
+
+                    <!-- Cassette Reels & Tape Window -->
+                    <div class="my-4 border border-white h-24 bg-black flex items-center justify-around px-8 relative">
+                        <!-- Left Reel -->
+                        <div class="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center relative spinning">
+                            <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                                <div class="w-2 h-2 bg-black rounded-full"></div>
+                            </div>
+                            <div class="absolute w-full h-0.5 bg-white"></div>
+                            <div class="absolute h-full w-0.5 bg-white"></div>
+                        </div>
+
+                        <!-- Center Tape Tape Indicator -->
+                        <div class="font-mono-tech text-[10px] text-neutral-400 text-center">
+                            ANALOG SYNTH<br>
+                            <span id="tape-counter" class="text-white font-bold text-sm">00:42</span>
+                        </div>
+
+                        <!-- Right Reel -->
+                        <div class="w-16 h-16 border-2 border-white rounded-full flex items-center justify-center relative spinning">
+                            <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                                <div class="w-2 h-2 bg-black rounded-full"></div>
+                            </div>
+                            <div class="absolute w-full h-0.5 bg-white"></div>
+                            <div class="absolute h-full w-0.5 bg-white"></div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Label -->
+                    <div class="flex justify-between items-center text-[10px] font-mono-tech text-neutral-400">
+                        <span>STEREO MAGNETIC CASSETTE</span>
+                        <span>EXPLICIT AUDIO</span>
+                    </div>
+                </div>
+
+                <!-- VU Meters -->
+                <div class="w-full max-w-md mt-4 grid grid-cols-2 gap-4 font-mono-tech text-xs">
+                    <div class="border border-white/30 p-2">
+                        <div class="flex justify-between text-[10px] text-neutral-400 mb-1">
+                            <span>L-CHANNEL</span>
+                            <span id="vu-l-val">-3 dB</span>
+                        </div>
+                        <div class="w-full bg-neutral-800 h-2">
+                            <div id="vu-l-bar" class="bg-white h-full transition-all duration-100" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                    <div class="border border-white/30 p-2">
+                        <div class="flex justify-between text-[10px] text-neutral-400 mb-1">
+                            <span>R-CHANNEL</span>
+                            <span id="vu-r-val">-1 dB</span>
+                        </div>
+                        <div class="w-full bg-neutral-800 h-2">
+                            <div id="vu-r-bar" class="bg-white h-full transition-all duration-100" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Plugin Specs & Controls -->
+            <div class="lg:col-span-6 space-y-6 font-mono-tech">
+                <div class="space-y-2 border-b border-white/20 pb-4">
+                    <div class="text-xs text-neutral-400">SPECIFICATIONS</div>
+                    <div class="text-sm">Platform: <span class="text-white">Linux, macOS, Windows</span></div>
+                    <div class="text-sm">Type: <span class="text-white">Audio Plugin / VST3 / AU / CLAP</span></div>
+                    <div class="text-sm">Format: <span class="text-white">64-Bit Stereo Processing</span></div>
+                </div>
+
+                <!-- Knobs / Sliders Sim -->
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>TAPE SATURATION</span>
+                            <span id="sat-val">68%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="68" class="w-full accent-white bg-neutral-800 cursor-pointer" id="sat-slider">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>PITCH WOBBLE & FLUTTER</span>
+                            <span id="wob-val">42%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="42" class="w-full accent-white bg-neutral-800 cursor-pointer" id="wob-slider">
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button class="flex-1 py-3 bg-white text-black font-bold uppercase text-xs tracking-wider hover:bg-neutral-200 transition">
+                        Buy License — $9.99
+                    </button>
+                    <button class="px-6 py-3 border border-white hover:bg-white/10 uppercase text-xs tracking-wider transition">
+                        Documentation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Branding Graphics & Badges Section -->
+    <section id="assets" class="max-w-7xl mx-auto px-6 py-16 border-b border-white/20">
+        <h2 class="text-2xl font-extrabold uppercase mb-8 font-mono-tech flex items-center gap-2">
+            <span>//</span> BRANDING ASSET MATRIX & Y2K EMBLEMS
+        </h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 font-mono-tech">
+            <!-- Asset 1: Parental Advisory -->
+            <div class="border border-white/20 p-4 bg-neutral-950 flex flex-col items-center justify-center hover:border-white transition">
+                <div class="border-2 border-white px-2 py-1 text-center">
+                    <div class="text-[10px] font-bold tracking-tighter leading-tight">PARENTAL</div>
+                    <div class="text-xs font-black tracking-widest border-y border-white my-0.5">ADVISORY</div>
+                    <div class="text-[8px] tracking-tighter">EXPLICIT CONTENT</div>
+                </div>
+                <span class="text-[10px] text-neutral-400 mt-3">ADVISORY BADGE</span>
+            </div>
+
+            <!-- Asset 2: Compact Disc -->
+            <div class="border border-white/20 p-4 bg-neutral-950 flex flex-col items-center justify-center hover:border-white transition">
+                <div class="text-center font-bold">
+                    <div class="text-[10px]">COMPACT</div>
+                    <div class="text-xl tracking-tighter leading-none border-b border-white pb-0.5">disc</div>
+                    <div class="text-[8px] font-normal tracking-wider mt-0.5">DIGITAL AUDIO</div>
+                </div>
+                <span class="text-[10px] text-neutral-400 mt-3">CD DIGITAL AUDIO</span>
+            </div>
+
+            <!-- Asset 3: Rating R -->
+            <div class="border border-white/20 p-4 bg-neutral-950 flex flex-col items-center justify-center hover:border-white transition">
+                <div class="w-10 h-10 border-2 border-white rounded-full flex items-center justify-center font-bold text-xl">
+                    R
+                </div>
+                <span class="text-[10px] text-neutral-400 mt-3">RESTRICTED RATING</span>
+            </div>
+
+            <!-- Asset 4: Y2K Sparkle Stars -->
+            <div class="border border-white/20 p-4 bg-neutral-950 flex flex-col items-center justify-center hover:border-white transition">
+                <div class="text-2xl">✦ ✧ ✦</div>
+                <span class="text-[10px] text-neutral-400 mt-3">SPARKLE MATRIX</span>
+            </div>
+
+            <!-- Asset 5: Barcode -->
+            <div class="border border-white/20 p-4 bg-neutral-950 flex flex-col items-center justify-center hover:border-white transition">
+                <div class="flex items-center gap-0.5 h-8">
+                    <div class="w-1 h-full bg-white"></div>
+                    <div class="w-0.5 h-full bg-white"></div>
+                    <div class="w-1.5 h-full bg-white"></div>
+                    <div class="w-0.5 h-full bg-white"></div>
+                    <div class="w-2 h-full bg-white"></div>
+                    <div class="w-1 h-full bg-white"></div>
+                    <div class="w-0.5 h-full bg-white"></div>
+                </div>
+                <span class="text-[10px] text-neutral-400 mt-3">UPC BARCODE</span>
+            </div>
+
+            <!-- Asset 6: Butterfly Wireframe -->
+            <div class="border border-white/20 p-4 bg-neutral-950 flex flex-col items-center justify-center hover:border-white transition">
+                <div class="text-2xl font-bold">Ƹ̵̡Ӝ̵̨̄Ʒ</div>
+                <span class="text-[10px] text-neutral-400 mt-3">VECTOR GRAPHIC</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center font-mono-tech text-xs text-neutral-400 gap-4">
+        <div>
+            © 2026 TECATEX AEROSPACE DIVISION. ALL RIGHTS RESERVED.
+        </div>
+        <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition">TERMS OF USE</a>
+            <a href="#" class="hover:text-white transition">PRIVACY POLICY</a>
+            <a href="#" class="hover:text-white transition">SECURITY TELEMETRY</a>
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Cursor Trail Effect
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            document.body.appendChild(trail);
+
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                trail.style.transform = 'scale(0.2)';
+            }, 50);
+
+            setTimeout(() => {
+                trail.remove();
+            }, 500);
+        });
+
+        // 3D Wireframe Globe with Three.js
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 3.5;
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Create Sphere Geometry & Wireframe Material
+        let segments = 24;
+        let geometry = new THREE.SphereGeometry(1.2, segments, segments);
+        let material = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.85
+        });
+
+        let globe = new THREE.Mesh(geometry, material);
+        scene.add(globe);
+
+        // Outer Ring / Orbit
+        const ringGeo = new THREE.RingGeometry(1.5, 1.52, 64);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.3 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 3;
+        scene.add(ring);
+
+        // Rotation Controls
+        let rotSpeed = 0.005;
+        let isDense = false;
+
+        document.getElementById('wireframe-toggle').addEventListener('click', () => {
+            scene.remove(globe);
+            isDense = !isDense;
+            const newSegs = isDense ? 48 : 24;
+            globe.geometry.dispose();
+            globe.geometry = new THREE.SphereGeometry(1.2, newSegs, newSegs);
+            scene.add(globe);
+        });
+
+        document.getElementById('speed-toggle').addEventListener('click', (e) => {
+            if (rotSpeed === 0.005) {
+                rotSpeed = 0.02;
+                e.target.innerText = 'Speed: 4.0x';
+            } else {
+                rotSpeed = 0.005;
+                e.target.innerText = 'Speed: 1.0x';
+            }
+        });
+
+        // Mouse Drag Rotation logic
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+
+                globe.rotation.y += deltaMove.x * 0.01;
+                globe.rotation.x += deltaMove.y * 0.01;
+            }
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            if (!isDragging) {
+                globe.rotation.y += rotSpeed;
+                ring.rotation.z += rotSpeed * 0.5;
+            }
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive Window Resize
+        window.addEventListener('resize', () => {
+            if (!container) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        // Audio VU Meter Dynamic simulation
+        setInterval(() => {
+            const lVal = Math.floor(60 + Math.random() * 35);
+            const rVal = Math.floor(60 + Math.random() * 38);
+            document.getElementById('vu-l-bar').style.width = lVal + '%';
+            document.getElementById('vu-r-bar').style.width = rVal + '%';
+            document.getElementById('vu-l-val').innerText = `-${100 - lVal} dB`;
+            document.getElementById('vu-r-val').innerText = `-${100 - rVal} dB`;
+        }, 150);
+
+        // Sliders feedback
+        document.getElementById('sat-slider').addEventListener('input', (e) => {
+            document.getElementById('sat-val').innerText = e.target.value + '%';
+        });
+
+        document.getElementById('wob-slider').addEventListener('input', (e) => {
+            document.getElementById('wob-val').innerText = e.target.value + '%';
+        });
+    </script>
+</body>
+</html>
